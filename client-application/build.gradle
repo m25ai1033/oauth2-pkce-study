@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // PKCE utility
+    implementation 'com.nimbusds:oauth2-oidc-sdk:11.10.1'
+
+    // Web utilities
+    implementation 'org.webjars:bootstrap:5.3.2'
+    implementation 'org.webjars:webjars-locator:0.50'
+
+    // Development
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+bootRun {
+    jvmArgs = ['--enable-preview']
+}
