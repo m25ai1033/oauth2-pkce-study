@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OAuth 2.0 PKCE Client</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 40px;
+        }
+        .feature-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">OAuth 2.0 PKCE Client</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/public">Public Page</a>
+            <a class="nav-link" href="/manual-auth">Manual PKCE Flow</a>
+            <a class="nav-link" href="/dashboard">Dashboard</a>
+        </div>
+    </div>
+</nav>
+
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4">OAuth 2.0 PKCE Demo</h1>
+        <p class="lead">Demonstrating Proof Key for Code Exchange (PKCE) with Spring Security</p>
+        <div class="mt-4">
+            <a href="/manual-auth" class="btn btn-light btn-lg me-3">Manual PKCE Flow</a>
+            <a href="/dashboard" class="btn btn-outline-light btn-lg">Auto Login</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card feature-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">🔐 PKCE Security</h5>
+                    <p class="card-text">Protects against authorization code interception attacks for public clients.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">⚡ Spring Security</h5>
+                    <p class="card-text">Built with Spring Security OAuth2 Client and modern security practices.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">🎯 Demo Ready</h5>
+                    <p class="card-text">Includes both automatic and manual OAuth2 flows for educational purposes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <h3>Manual PKCE Flow</h3>
+            <p>Experience the complete OAuth2 PKCE flow step by step:</p>
+            <ul>
+                <li>Generate code verifier and challenge</li>
+                <li>Redirect to authorization server</li>
+                <li>Handle callback with authorization code</li>
+                <li>Exchange code for tokens with PKCE verification</li>
+            </ul>
+            <a href="/manual-auth" class="btn btn-primary">Try Manual Flow</a>
+        </div>
+        <div class="col-md-6">
+            <h3>Automatic Flow</h3>
+            <p>Let Spring Security handle the OAuth2 flow automatically:</p>
+            <ul>
+                <li>Automatic PKCE challenge generation</li>
+                <li>Seamless token management</li>
+                <li>Built-in security features</li>
+                <li>Easy integration</li>
+            </ul>
+            <a href="/dashboard" class="btn btn-success">Try Auto Login</a>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white mt-5 py-4">
+    <div class="container text-center">
+        <p>OAuth 2.0 PKCE Client Demo - Spring Boot 3.2 + Spring Security 6.1</p>
+    </div>
+</footer>
+</body>
+</html>
