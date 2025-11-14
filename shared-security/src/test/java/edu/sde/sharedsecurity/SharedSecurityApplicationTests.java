@@ -1,4 +1,4 @@
-package edu.sde.shared_security;
+package edu.sde.sharedsecurity;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

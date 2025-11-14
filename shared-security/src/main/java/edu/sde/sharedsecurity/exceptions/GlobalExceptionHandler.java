@@ -1,6 +1,6 @@
 package edu.sde.sharedsecurity.exceptions;
 
-import com.oauth.pkce.shared.security.dto.ErrorResponse;
+import edu.sde.sharedsecurity.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,7 @@
 package edu.sde.sharedsecurity.utils;
 
-import com.oauth.pkce.shared.security.config.SecurityConstants;
+
+import edu.sde.sharedsecurity.configs.SecurityConstants;
 
 public record PKCEChallenge(
     String codeVerifier,

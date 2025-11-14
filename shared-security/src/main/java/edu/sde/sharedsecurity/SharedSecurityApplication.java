@@ -1,4 +1,4 @@
-package edu.sde.shared_security;
+package edu.sde.sharedsecurity;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
