@@ -5,6 +5,9 @@ plugins {
 }
 
 dependencies {
+    // Spring Boot Starter Web for HttpServletRequest
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
     // Spring Security for common security configurations
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
@@ -23,6 +26,9 @@ dependencies {
     // Development
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 dependencyManagement {
