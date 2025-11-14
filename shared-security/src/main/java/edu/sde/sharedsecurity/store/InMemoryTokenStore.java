@@ -1,6 +1,6 @@
 package edu.sde.sharedsecurity.store;
 
-import com.oauth.pkce.shared.security.dto.TokenResponse;
+import edu.sde.sharedsecurity.dto.TokenResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

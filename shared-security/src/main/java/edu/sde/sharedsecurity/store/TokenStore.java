@@ -1,6 +1,7 @@
 package edu.sde.sharedsecurity.store;
 
-import com.oauth.pkce.shared.security.dto.TokenResponse;
+
+import edu.sde.sharedsecurity.dto.TokenResponse;
 
 import java.util.Optional;
 
