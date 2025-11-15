@@ -2,37 +2,29 @@ plugins {
     id 'java'
 }
 
+bootJar {
+    mainClass = 'com.oauth.pkce.authserver.AuthServerApplication'
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security:spring-security-oauth2-authorization-server'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // Database
     runtimeOnly 'com.h2database:h2'
     implementation 'org.postgresql:postgresql'
 
-    // JWT support (use Spring Security's built-in JWT)
-    implementation 'com.nimbusds:nimbus-jose-jwt:9.37.3'
-
-    // Utilities
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    // Shared security module
+    implementation project(':shared-security')
 
     // Development
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-    // Testing
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.testcontainers:junit-jupiter'
-
-    implementation project(':shared-security')
 }
 
-bootRun {
-    jvmArgs = ['--enable-preview']
-}
+// Remove individual bootRun configuration since it's in root build.gradle
