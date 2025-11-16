@@ -1,5 +1,7 @@
 package edu.sde.maliciousclient.dto;
 
+import java.time.LocalDateTime;
+
 // Record to store intercepted code information
     public record InterceptedCode(
         String id,

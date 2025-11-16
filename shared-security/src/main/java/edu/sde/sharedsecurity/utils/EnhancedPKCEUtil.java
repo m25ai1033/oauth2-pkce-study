@@ -1,5 +1,6 @@
 package edu.sde.sharedsecurity.utils;
 
+import edu.sde.sharedsecurity.configs.SecurityConstants;
 import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;

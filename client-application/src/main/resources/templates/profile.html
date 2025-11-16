@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">PKCE Client</a>
+        <div class="navbar-nav ms-auto">
+            <span class="navbar-text me-3" th:if="${user}">
+                Hello, <span th:text="${user.getAttribute('name')}">User</span>!
+            </span>
+            <a class="nav-link" href="/dashboard">Dashboard</a>
+            <a class="nav-link" href="/logout">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4>User Profile</h4>
+                </div>
+                <div class="card-body">
+                    <div th:if="${user}">
+                        <h5>Profile Information:</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <strong>Full Name:</strong>
+                                        <span th:text="${profile.name ?: 'Not provided'}"></span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Email:</strong>
+                                        <span th:text="${profile.email ?: 'Not provided'}"></span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Subject ID:</strong>
+                                        <span th:text="${profile.subject ?: 'Unknown'}"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4">All User Attributes:</h5>
+                        <div class="alert alert-info">
+                            <pre id="user-attributes"></pre>
+                        </div>
+
+                        <h5 class="mt-4">ID Token Claims:</h5>
+                        <div class="alert alert-secondary">
+                            <pre id="id-token-claims"></pre>
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="/dashboard" class="btn btn-primary">Back to Dashboard</a>
+                            <a href="/" class="btn btn-secondary ms-2">Home</a>
+                        </div>
+                    </div>
+                    <div th:unless="${user}">
+                        <div class="alert alert-warning">
+                            <p>You are not authenticated. Please login first.</p>
+                            <a href="/manual-auth" class="btn btn-primary">Login with PKCE</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // Display user attributes as formatted JSON
+    var userAttributes = /*[[${user?.attributes}]]*/ {};
+    if (userAttributes) {
+        document.getElementById('user-attributes').textContent =
+            JSON.stringify(userAttributes, null, 2);
+    }
+
+    // Display ID token claims if available
+    var idTokenClaims = /*[[${user?.getIdToken()?.getClaims()}]]*/ {};
+    if (idTokenClaims) {
+        document.getElementById('id-token-claims').textContent =
+            JSON.stringify(idTokenClaims, null, 2);
+    }
+</script>
+</body>
+</html>

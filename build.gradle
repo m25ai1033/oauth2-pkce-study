@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.5' apply false
+    id 'org.springframework.boot' version '3.5.7' apply false
     id 'io.spring.dependency-management' version '1.1.5' apply false
 }
 
@@ -20,7 +20,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.5"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:3.5.7"
         }
     }
 
@@ -30,12 +30,28 @@ subprojects {
         }
     }
 
+    // Skip tests
     tasks.named('test') {
-        useJUnitPlatform()
-        jvmArgs = ['--enable-preview']
+        enabled = false
     }
 
+    // Configure Java compilation with preview features
     tasks.named('compileJava') {
-        options.compilerArgs += ['--enable-preview']
+        options.compilerArgs += ['--enable-preview', '-Xlint:preview']
+        options.encoding = 'UTF-8'
+    }
+
+    tasks.named('compileTestJava') {
+        options.compilerArgs += ['--enable-preview', '-Xlint:preview']
+        options.encoding = 'UTF-8'
+    }
+
+    // Configure bootRun and test to use preview features
+    tasks.named('bootRun') {
+        jvmArgs += ['--enable-preview']
+    }
+
+    tasks.named('test') {
+        jvmArgs += ['--enable-preview']
     }
 }

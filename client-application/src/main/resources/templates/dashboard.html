@@ -10,11 +10,19 @@
     <div class="container">
         <a class="navbar-brand" href="/">PKCE Client</a>
         <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3" th:if="${user}">
-                    Hello, <span th:text="${user.getAttribute('name')}">User</span>!
-                </span>
+            <span class="navbar-text me-3" th:if="${user}">
+                Hello, <span th:text="${user.getAttribute('name') ?: 'User'}"></span>!
+            </span>
+            <a class="nav-link" href="/dashboard">Dashboard</a>
             <a class="nav-link" href="/profile">Profile</a>
-            <a class="nav-link" href="/logout">Logout</a>
+
+            <!-- Logout Form -->
+            <form th:if="${user}" method="post" action="/perform-logout" class="d-inline">
+                <button type="submit" class="btn btn-outline-light btn-sm ms-2">Logout</button>
+            </form>
+
+            <!-- Or simple logout link -->
+            <a th:unless="${user}" class="nav-link" href="/manual-auth">Login</a>
         </div>
     </div>
 </nav>
@@ -37,7 +45,8 @@
 
                         <h5 class="mt-4">ID Token Claims:</h5>
                         <div class="alert alert-info">
-                            <pre th:text="${#maps.toString(claims)}"></pre>
+                            <!-- FIXED: Using JavaScript for pretty JSON -->
+                            <pre id="claims-json"></pre>
                         </div>
 
                         <div class="mt-4">
@@ -56,5 +65,12 @@
         </div>
     </div>
 </div>
+
+<script th:inline="javascript">
+    var claims = /*[[${claims}]]*/ {};
+    if (claims && Object.keys(claims).length > 0) {
+        document.getElementById('claims-json').textContent = JSON.stringify(claims, null, 2);
+    }
+</script>
 </body>
 </html>

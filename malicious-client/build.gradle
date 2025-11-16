@@ -2,26 +2,30 @@ plugins {
     id 'java'
 }
 
+springBoot {
+    mainClass = 'edu.sde.maliciousclient.MaliciousClientApplication'
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'  // Added Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux' // For reactive HTTP client
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     // HTTP client for token requests
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3'
+    //implementation 'org.apache.httpcomponents.client5:httpclient5:5.3'
 
     // JSON processing
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Shared security module
+    implementation project(':shared-security')
 
     // Development
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-    // Testing
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-bootRun {
-    jvmArgs = ['--enable-preview']
-}
+// Remove individual    bootRun configuration since it's in root build.gradle

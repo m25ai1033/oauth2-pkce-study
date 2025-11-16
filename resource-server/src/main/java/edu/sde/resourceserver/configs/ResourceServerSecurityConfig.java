@@ -1,4 +1,4 @@
-package edu.sde.maliciousclient.configs;
+package edu.sde.resourceserver.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,18 +8,20 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class MaliciousSecurityConfig {
+public class ResourceServerSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                .anyRequest().permitAll()  // Allow all access
+                .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/api/protected/user/**").hasAuthority("SCOPE_profile")
+                .requestMatchers("/api/protected/admin/**").hasAuthority("SCOPE_write")
+                .anyRequest().authenticated()
             )
-            .oauth2Login(oauth2 -> oauth2
-                .defaultSuccessUrl("/stolen-tokens", true)
-            )
-            .csrf(csrf -> csrf.disable());  // Disable CSRF for attacks
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwt -> jwt.jwkSetUri("http://localhost:9000/auth/oauth2/jwks"))
+            );
 
         return http.build();
     }

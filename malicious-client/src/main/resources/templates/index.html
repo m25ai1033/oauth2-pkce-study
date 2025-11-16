@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Malicious Client - OAuth 2.0 PKCE Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .malicious-header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+        .danger-card {
+            border-left: 4px solid #dc3545;
+        }
+        .success-card {
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">⚠️ Malicious Client</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/intercept">Intercept Code</a>
+            <a class="nav-link" href="/attack">Execute Attack</a>
+            <a class="nav-link" href="/analyze">Attack Analysis</a>
+        </div>
+    </div>
+</nav>
+
+<div class="malicious-header">
+    <div class="container text-center">
+        <h1 class="display-4">⚠️ Malicious Client Simulation</h1>
+        <p class="lead">Demonstrating OAuth 2.0 Authorization Code Interception Attack</p>
+        <p class="mb-0">This simulates what PKCE protection prevents</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card danger-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">🚨 Current Threat</h5>
+                    <p class="card-text">
+                        <strong>Intercepted Codes:</strong>
+                        <span class="badge bg-danger" th:text="${interceptedCodesCount}">0</span>
+                    </p>
+                    <p>Authorization codes intercepted and ready for attack attempts.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">🎯 Attack Vector</h5>
+                    <p>This client simulates an attacker who:</p>
+                    <ul>
+                        <li>Intercepts authorization codes</li>
+                        <li>Attempts token exchange without PKCE</li>
+                        <li>Exploits vulnerable OAuth2 implementations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card success-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">🛡️ PKCE Protection</h5>
+                    <p>PKCE (Proof Key for Code Exchange) prevents this attack by:</p>
+                    <ul>
+                        <li>Binding authorization request to token request</li>
+                        <li>Requiring code verifier for token exchange</li>
+                        <li>Making intercepted codes useless to attackers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">🚨 Attack Demonstration</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Step 1: Intercept Authorization Code</h6>
+                    <p>Capture an authorization code from a vulnerable flow.</p>
+                    <a href="/intercept" class="btn btn-outline-danger">Intercept Code</a>
+
+                    <h6 class="mt-3">Step 2: Execute Attack</h6>
+                    <p>Attempt to exchange intercepted code for tokens.</p>
+                    <a href="/attack" class="btn btn-outline-danger">Execute Attack</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">📊 Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${recentCodes.empty}">
+                        <p class="text-muted">No intercepted codes yet.</p>
+                    </div>
+                    <div th:each="code : ${recentCodes}">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted" th:text="${code.interceptedAt}">timestamp</small>
+                            <span th:if="${code.attackSuccessful()}" class="badge bg-danger">Attack Successful</span>
+                            <span th:if="${code.attackAttempted() and not code.attackSuccessful()}" class="badge bg-warning">Attack Failed</span>
+                            <span th:if="${not code.attackAttempted()}" class="badge bg-secondary">Not Attempted</span>
+                        </div>
+                        <code class="small" th:text="${code.authorizationCode().substring(0, 20) + '...'}">code...</code>
+                        <hr>
+                    </div>
+                    <a href="/analyze" class="btn btn-outline-warning">View Detailed Analysis</a>
+                    <a href="/clear" class="btn btn-outline-secondary ms-2">Clear All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h6>🔬 Educational Purpose Only</h6>
+                <p class="mb-0">
+                    This application is for educational demonstration only. It shows the importance of
+                    PKCE protection in OAuth 2.0 flows for public clients. Always implement PKCE
+                    in your production applications.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

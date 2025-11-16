@@ -1,6 +1,7 @@
 package edu.sde.sharedsecurity.configs;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -10,14 +11,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@EnableConfigurationProperties(CorsProperties.class) // Add this line
 public class CorsConfig {
     
-    private final CorsProperties corsProperties;
-    
-    @Autowired
-    public CorsConfig(CorsProperties corsProperties) {
-        this.corsProperties = corsProperties;
-    }
+    @Autowired private CorsProperties corsProperties;
     
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -25,9 +22,9 @@ public class CorsConfig {
         configuration.setAllowedOrigins(corsProperties.getAllowedOrigins());
         configuration.setAllowedMethods(corsProperties.getAllowedMethods());
         configuration.setAllowedHeaders(corsProperties.getAllowedHeaders());
-        configuration.setExposedHeaders(List.of("Authorization"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
+        configuration.setExposedHeaders(corsProperties.getExposedHeaders());
+        configuration.setAllowCredentials(corsProperties.isAllowCredentials());
+        configuration.setMaxAge(corsProperties.getMaxAge());
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

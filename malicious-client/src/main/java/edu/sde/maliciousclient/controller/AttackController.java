@@ -2,6 +2,7 @@ package edu.sde.maliciousclient.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.sde.maliciousclient.dto.InterceptedCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +48,7 @@ public class AttackController {
     @Value("${malicious.redirect-uri:http://localhost:8082/auth/callback}")
     private String redirectUri;
 
-    @GetMapping("/")
+    @GetMapping("/attack/home")
     public String home(Model model) {
         model.addAttribute("interceptedCodesCount", interceptedCodes.size());
         model.addAttribute("recentCodes", getRecentCodes(5));
@@ -142,10 +143,10 @@ public class AttackController {
     public String analyzePage(Model model) {
         long totalCodes = interceptedCodes.size();
         long attemptedAttacks = interceptedCodes.values().stream()
-                .filter(InterceptedCode::attackAttempted)
+                .filter(InterceptedCode::attackAttempted)  // FIXED: Use attackAttempted() not isAttackAttempted()
                 .count();
         long successfulAttacks = interceptedCodes.values().stream()
-                .filter(InterceptedCode::attackSuccessful)
+                .filter(InterceptedCode::attackSuccessful)  // FIXED: Use attackSuccessful() not isAttackSuccessful()
                 .count();
         
         model.addAttribute("totalCodes", totalCodes);
@@ -202,26 +203,5 @@ public class AttackController {
                 .limit(count)
                 .toList();
     }
-    
-    // Record to store intercepted code information
-    public record InterceptedCode(
-        String id,
-        String authorizationCode,
-        LocalDateTime interceptedAt,
-        boolean attackAttempted,
-        boolean attackSuccessful,
-        LocalDateTime lastAttackAttempt
-    ) {
-        public InterceptedCode(String id, String authorizationCode, LocalDateTime interceptedAt) {
-            this(id, authorizationCode, interceptedAt, false, false, null);
-        }
-        
-        public InterceptedCode markAttackAttempted() {
-            return new InterceptedCode(id, authorizationCode, interceptedAt, true, attackSuccessful, LocalDateTime.now());
-        }
-        
-        public InterceptedCode markAttackSuccessful() {
-            return new InterceptedCode(id, authorizationCode, interceptedAt, true, true, LocalDateTime.now());
-        }
-    }
+
 }

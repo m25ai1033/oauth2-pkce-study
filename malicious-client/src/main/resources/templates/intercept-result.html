@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Intercept Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">⚠️ Malicious Client</a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div th:if="${success}" class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h4>✅ Code Intercepted Successfully</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <strong>Authorization Code Stored:</strong><br>
+                        <code th:text="${authorizationCode}"></code>
+                    </div>
+
+                    <p>The authorization code has been stored and is ready for attack attempts.</p>
+
+                    <div class="mt-4">
+                        <a th:href="@{'/attack?codeId=' + ${codeId}}" class="btn btn-danger">
+                            🚨 Attempt Token Exchange Attack
+                        </a>
+                        <a href="/intercept" class="btn btn-outline-secondary ms-2">Intercept Another Code</a>
+                        <a href="/" class="btn btn-secondary ms-2">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:unless="${success}" class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4>❌ Intercept Failed</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong> <span th:text="${message}"></span>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="/intercept" class="btn btn-outline-danger">Try Again</a>
+                        <a href="/" class="btn btn-secondary ms-2">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Attack Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">⚠️ Malicious Client</a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div th:if="${success}" class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4>🚨 ATTACK SUCCESSFUL - SECURITY VULNERABILITY DEMONSTRATED</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5>❌ SECURITY BREACH DETECTED</h5>
+                        <p class="mb-0" th:text="${message}"></p>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <strong>Vulnerability:</strong>
+                        <span th:text="${vulnerability}"></span>
+                        <br><br>
+                        <strong>Impact:</strong> An attacker can steal authorization codes and obtain access tokens without user consent.
+                    </div>
+
+                    <h5>Intercepted Code Used:</h5>
+                    <div class="alert alert-info">
+                        <code th:text="${interceptedCode.authorizationCode()}"></code><br>
+                        <small>Intercepted at: <span th:text="${interceptedCode.interceptedAt()}"></span></small>
+                    </div>
+
+                    <h5>Tokens Obtained (Security Breach):</h5>
+                    <div class="alert alert-success">
+                        <pre th:text="${#maps.toString(tokenResponse)}"></pre>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="/analyze" class="btn btn-outline-danger">View Attack Analysis</a>
+                        <a href="/attack" class="btn btn-danger">Execute Another Attack</a>
+                        <a href="/" class="btn btn-secondary ms-2">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:unless="${success}" class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h4>✅ ATTACK FAILED - PKCE PROTECTION WORKING</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-success">
+                        <h5>✅ SECURITY PROTECTION CONFIRMED</h5>
+                        <p class="mb-0" th:text="${message}"></p>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Protection Mechanism:</strong>
+                        <span th:text="${vulnerability}"></span>
+                        <br><br>
+                        <strong>Result:</strong> PKCE successfully prevented the authorization code interception attack.
+                    </div>
+
+                    <div th:if="${interceptedCode}">
+                        <h5>Intercepted Code Used:</h5>
+                        <div class="alert alert-info">
+                            <code th:text="${interceptedCode.authorizationCode()}"></code><br>
+                            <small>Intercepted at: <span th:text="${interceptedCode.interceptedAt()}"></span></small>
+                        </div>
+                    </div>
+
+                    <div th:if="${tokenResponse}">
+                        <h5>Error Response from Authorization Server:</h5>
+                        <div class="alert alert-warning">
+                            <pre th:text="${#maps.toString(tokenResponse)}"></pre>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="/analyze" class="btn btn-outline-success">View Security Analysis</a>
+                        <a href="/attack" class="btn btn-outline-primary">Try Another Code</a>
+                        <a href="/" class="btn btn-secondary ms-2">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

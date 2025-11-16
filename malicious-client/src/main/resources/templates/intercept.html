@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Intercept Authorization Code</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">⚠️ Malicious Client</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/intercept">Intercept Code</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4>🚨 Intercept Authorization Code</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Simulated Attack Vector:</strong>
+                        This simulates an attacker intercepting an authorization code through:
+                        <ul class="mb-0 mt-2">
+                            <li>Man-in-the-middle attacks</li>
+                            <li>Malicious browser extensions</li>
+                            <li>Compromised redirect URIs</li>
+                            <li>Code leakage in logs</li>
+                        </ul>
+                    </div>
+
+                    <form th:action="@{/intercept}" method="post">
+                        <div class="mb-3">
+                            <label for="authorizationCode" class="form-label">
+                                <strong>Authorization Code to Intercept:</strong>
+                            </label>
+                            <input type="text" class="form-control" id="authorizationCode"
+                                   name="authorizationCode" placeholder="Enter intercepted authorization code" required>
+                            <div class="form-text">
+                                In a real attack, this would be captured automatically from network traffic or logs.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Attack Client Configuration:</strong></label>
+                            <div class="alert alert-info">
+                                <strong>Client ID:</strong> <code th:text="${clientId}"></code><br>
+                                <strong>Redirect URI:</strong> <code th:text="${redirectUri}"></code>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            🚨 Intercept and Store Code
+                        </button>
+                        <a href="/" class="btn btn-secondary ms-2">Cancel</a>
+                    </form>
+
+                    <div class="mt-4">
+                        <h6>How to get a real authorization code for testing:</h6>
+                        <ol>
+                            <li>Start the legitimate client application</li>
+                            <li>Go through the OAuth flow without PKCE</li>
+                            <li>Copy the authorization code from the callback URL</li>
+                            <li>Paste it here to simulate interception</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

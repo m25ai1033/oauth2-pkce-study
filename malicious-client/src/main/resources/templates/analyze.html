@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Attack Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">⚠️ Malicious Client</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/analyze">Attack Analysis</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h4>📊 Authorization Code Interception Attack Analysis</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h2 class="text-primary" th:text="${totalCodes}">0</h2>
+                                    <p class="mb-0">Total Codes Intercepted</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h2 class="text-warning" th:text="${attemptedAttacks}">0</h2>
+                                    <p class="mb-0">Attack Attempts</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h2 class="text-danger" th:text="${successfulAttacks}">0</h2>
+                                    <p class="mb-0">Successful Attacks</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h2 th:classappend="${successRate > 0} ? 'text-danger' : 'text-success'"
+                                        th:text="|${successRate}%|">0%</h2>
+                                    <p class="mb-0">Attack Success Rate</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <h5>Recent Interception Activity</h5>
+                    <div th:if="${recentActivity.empty}" class="alert alert-info">
+                        No interception activity yet.
+                    </div>
+                    <div th:unless="${recentActivity.empty}" class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Authorization Code</th>
+                                <th>Attack Attempted</th>
+                                <th>Attack Result</th>
+                                <th>Last Attempt</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="activity : ${recentActivity}">
+                                <td th:text="${activity.interceptedAt}">timestamp</td>
+                                <td><code th:text="${activity.authorizationCode().substring(0, 25) + '...'}">code...</code></td>
+                                <td>
+                                    <span th:if="${activity.attackAttempted()}" class="badge bg-warning">Yes</span>
+                                    <span th:unless="${activity.attackAttempted()}" class="badge bg-secondary">No</span>
+                                </td>
+                                <td>
+                                    <span th:if="${activity.attackSuccessful()}" class="badge bg-danger">Successful</span>
+                                    <span th:if="${activity.attackAttempted() and not activity.attackSuccessful()}" class="badge bg-warning">Failed</span>
+                                    <span th:if="${not activity.attackAttempted()}" class="badge bg-info">Not Attempted</span>
+                                </td>
+                                <td th:text="${activity.lastAttackAttempt() ?: 'N/A'}">N/A</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Security Analysis -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-danger text-white">
+                                    <h6>🚨 Security Risk Assessment</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div th:if="${successfulAttacks > 0}" class="alert alert-danger">
+                                        <strong>CRITICAL RISK</strong><br>
+                                        Authorization server is vulnerable to code interception attacks.<br>
+                                        PKCE protection is not properly implemented.
+                                    </div>
+                                    <div th:if="${successfulAttacks == 0 and attemptedAttacks > 0}" class="alert alert-success">
+                                        <strong>LOW RISK</strong><br>
+                                        Authorization server properly rejects attacks.<br>
+                                        PKCE protection is working correctly.
+                                    </div>
+                                    <div th:if="${attemptedAttacks == 0}" class="alert alert-info">
+                                        <strong>UNKNOWN RISK</strong><br>
+                                        No attack attempts made yet.<br>
+                                        Cannot assess security posture.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h6>🛡️ PKCE Protection Status</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div th:if="${successfulAttacks > 0}">
+                                        <p class="text-danger">❌ PKCE protection is NOT effective</p>
+                                        <ul>
+                                            <li>Authorization server accepts codes without verifiers</li>
+                                            <li>Public clients are vulnerable</li>
+                                            <li>Immediate remediation required</li>
+                                        </ul>
+                                    </div>
+                                    <div th:if="${successfulAttacks == 0 and attemptedAttacks > 0}">
+                                        <p class="text-success">✅ PKCE protection is WORKING</p>
+                                        <ul>
+                                            <li>Authorization server requires code verifiers</li>
+                                            <li>Intercepted codes are useless to attackers</li>
+                                            <li>Public clients are protected</li>
+                                        </ul>
+                                    </div>
+                                    <div th:if="${attemptedAttacks == 0}">
+                                        <p class="text-warning">⚠️ PKCE status unknown</p>
+                                        <p>Execute attacks to test PKCE protection</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <a href="/attack" class="btn btn-outline-danger">Execute More Attacks</a>
+                        <a href="/intercept" class="btn btn-outline-primary ms-2">Intercept More Codes</a>
+                        <a href="/clear" class="btn btn-outline-secondary ms-2">Clear All Data</a>
+                        <a href="/" class="btn btn-secondary ms-2">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

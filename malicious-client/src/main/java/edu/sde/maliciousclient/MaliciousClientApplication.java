@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MaliciousClientApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MaliciousClientApplication.class, args);
-	}
-
+    static void main(String[] args) {
+        SpringApplication.run(MaliciousClientApplication.class, args);
+    }
 }

@@ -1,7 +1,17 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.5' apply false
-    id 'io.spring.dependency-management' version '1.1.5'
+//    id 'org.springframework.boot' version '3.5.5' apply false
+//    id 'io.spring.dependency-management' version '1.1.5'
+}
+
+// This is a library module, not an application
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+    archiveClassifier = ''
 }
 
 dependencies {
@@ -42,6 +52,4 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
-tasks.named('compileJava') {
-    options.compilerArgs += ['--enable-preview']
-}
+// Remove individual compileJava configuration since it's in root build.gradle

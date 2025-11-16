@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Execute Attack</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">⚠️ Malicious Client</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/attack">Execute Attack</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4>🚨 Execute Authorization Code Interception Attack</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Attack Description:</strong>
+                        This attempts to exchange an intercepted authorization code for access tokens
+                        WITHOUT providing the PKCE code verifier.
+                    </div>
+
+                    <div th:if="${interceptedCodes.empty}">
+                        <div class="alert alert-info">
+                            <p>No intercepted codes available. Please intercept an authorization code first.</p>
+                            <a href="/intercept" class="btn btn-outline-primary">Intercept a Code</a>
+                        </div>
+                    </div>
+
+                    <div th:unless="${interceptedCodes.empty}">
+                        <form th:action="@{/attack}" method="post">
+                            <div class="mb-3">
+                                <label for="codeId" class="form-label">
+                                    <strong>Select Intercepted Code to Attack:</strong>
+                                </label>
+                                <select class="form-select" id="codeId" name="codeId" required>
+                                    <option value="">-- Select an intercepted code --</option>
+                                    <option th:each="code : ${interceptedCodes}"
+                                            th:value="${code.id}"
+                                            th:text="|${code.interceptedAt} - ${code.authorizationCode().substring(0, 20)}...|">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Attack Parameters:</strong></label>
+                                <div class="alert alert-danger">
+                                    <strong>Client ID:</strong> <code th:text="${@environment.getProperty('malicious.client-id')}"></code><br>
+                                    <strong>Token Endpoint:</strong> <code th:text="${@environment.getProperty('malicious.auth-server-token-endpoint')}"></code><br>
+                                    <strong>Critical:</strong> <span class="text-danger">NO code_verifier will be provided!</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                🚨 Execute Attack (No PKCE)
+                            </button>
+                            <a href="/" class="btn btn-secondary ms-2">Cancel</a>
+                        </form>
+                    </div>
+
+                    <div class="mt-4">
+                        <h6>Expected Outcomes:</h6>
+                        <ul>
+                            <li><strong>Without PKCE Protection:</strong> Attack succeeds, tokens are issued</li>
+                            <li><strong>With PKCE Protection:</strong> Attack fails with "invalid_grant" error</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

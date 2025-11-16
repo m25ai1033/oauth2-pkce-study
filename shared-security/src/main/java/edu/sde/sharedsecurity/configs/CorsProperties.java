@@ -12,6 +12,9 @@ public class CorsProperties {
     private List<String> allowedOrigins = Arrays.asList("http://localhost:3000", "http://localhost:8080");
     private List<String> allowedMethods = Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS");
     private List<String> allowedHeaders = Arrays.asList("Authorization", "Content-Type", "X-Requested-With");
+    private List<String> exposedHeaders = Arrays.asList("Authorization");
+    private boolean allowCredentials = true;
+    private long maxAge = 3600L;
 
     // Getters and setters
     public List<String> getAllowedOrigins() { return allowedOrigins; }
@@ -22,4 +25,13 @@ public class CorsProperties {
     
     public List<String> getAllowedHeaders() { return allowedHeaders; }
     public void setAllowedHeaders(List<String> allowedHeaders) { this.allowedHeaders = allowedHeaders; }
+    
+    public List<String> getExposedHeaders() { return exposedHeaders; }
+    public void setExposedHeaders(List<String> exposedHeaders) { this.exposedHeaders = exposedHeaders; }
+    
+    public boolean isAllowCredentials() { return allowCredentials; }
+    public void setAllowCredentials(boolean allowCredentials) { this.allowCredentials = allowCredentials; }
+    
+    public long getMaxAge() { return maxAge; }
+    public void setMaxAge(long maxAge) { this.maxAge = maxAge; }
 }

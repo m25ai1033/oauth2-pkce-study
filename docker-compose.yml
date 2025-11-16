@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: oauth2-pkce-postgres
+    environment:
+      POSTGRES_DB: oauth2_pkce
+      POSTGRES_USER: oauth_user
+      POSTGRES_PASSWORD: oauth_password
+    ports:
+      - "5432:5432"  # Changed from 5432:5432 to 5433:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - oauth2-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U oauth_user -d oauth2_pkce"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Authorization Server
+#  auth-server:
+#    build:
+#      context: ./auth-server
+#      dockerfile: Dockerfile
+#    container_name: oauth2-auth-server
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#      - SPRING_FLYWAY_ENABLED=true
+#      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
+#    ports:
+#      - "9000:9000"
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    healthcheck:
+#      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9000/auth/actuator/health || exit 1"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 6
+#      start_period: 30s
+#    volumes:
+#      - ./auth-server/data:/data
+#    networks:
+#      - oauth2-network
+
+  # Client Application
+#  client-application:
+#    build:
+#      context: ./client-application
+#      dockerfile: Dockerfile
+#    container_name: oauth2-client-app
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#      - CLIENT_AUTH_SERVER_BASE_URL=http://auth-server:9000/auth
+#      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_AUTH-SERVER_ISSUER-URI=http://localhost:9000/auth
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      auth-server:
+#        condition: service_healthy
+#    networks:
+#      - oauth2-network
+
+  # Malicious Client
+#  malicious-client:
+#    build:
+#      context: .
+#      dockerfile: malicious-client/Dockerfile
+#    container_name: oauth2-malicious-client
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#      MALICIOUS_AUTH_SERVER_BASE_URL: http://auth-server:9000
+#    ports:
+#      - "8082:8082"
+#    depends_on:
+#      auth-server:
+#        condition: service_healthy
+#    networks:
+#      - oauth2-network
+
+volumes:
+  postgres_data:
+
+networks:
+  oauth2-network:
+    driver: bridge
