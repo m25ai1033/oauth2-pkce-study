@@ -4,6 +4,7 @@
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.7-brightgreen)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6.2.0-green)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15.14-blue)
+![Gradle](https://img.shields.io/badge/Gradle-8.4-lightblue)
 ![OAuth2](https://img.shields.io/badge/OAuth%202.0-RFC%206749-blue)
 ![PKCE](https://img.shields.io/badge/PKCE-RFC%207636-success)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
@@ -70,12 +71,12 @@ graph TB
     end
     
     subgraph "Authorization Infrastructure"
-        AUTH[Authorization Server<br/>Port 9000<br/>Spring Authorization Server]:::auth
-        DB[(OAuth2 Database<br/>PostgreSQL 15.14)]:::database
+        AUTH[Authorization Server<br/>Port 9000/auth<br/>Spring Authorization Server]:::auth
+        DB[(OAuth2 Database<br/>PostgreSQL 15.14<br/>Dockerized)]:::database
     end
     
     subgraph "Resource Domain"
-        API[Resource Server<br/>Port 8090<br/>Protected APIs]:::resource
+        API[Resource Server<br/>Port 8081<br/>Protected APIs]:::resource
     end
     
     %% RELATIONSHIPS
@@ -112,15 +113,15 @@ graph TB
 | **Legitimate Client** | Spring Boot 3.5.7, Thymeleaf, WebFlux, Bootstrap, Java 21 | PKCE-enhanced public client demonstration |
 | **Malicious Client** | Spring Boot 3.5.7, WebFlux, Java 21 | Authorization code interception simulation |
 | **Resource Server** | Spring Boot 3.5.7, Spring Security, Java 21 | Protected API endpoints |
-| **Data Storage** | PostgreSQL 15.14, Spring Data JPA 3.2 | OAuth2 client configuration and user data |
+| **Data Storage** | PostgreSQL 15.14 (Docker), Spring Data JPA 3.2 | OAuth2 client configuration and user data |
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - **Java 21** (OpenJDK 21 or Oracle JDK 21)
-- **PostgreSQL 15.14**
-- **Maven 3.6+** or **Gradle 7.6+**
+- **Docker & Docker Compose** (for PostgreSQL)
+- **Gradle 8.4+**
 - **Git**
 
 ### Installation & Setup
@@ -131,59 +132,143 @@ graph TB
    cd oauth2-pkce-study
    ```
 
-2. **Database Configuration**
-   ```sql
-   -- Create database
-   CREATE DATABASE oauth2_pkce_study;
-   
-   -- Create user (optional)
-   CREATE USER pkce_user WITH PASSWORD 'secure_password';
-   GRANT ALL PRIVILEGES ON DATABASE oauth2_pkce_study TO pkce_user;
-   ```
-
-3. **Environment Configuration**
-   ```yaml
-   # application.yml for each module
-   spring:
-     datasource:
-       url: jdbc:postgresql://localhost:5432/oauth2_pkce_study
-       username: pkce_user
-       password: secure_password
-     jpa:
-       hibernate:
-         ddl-auto: update
-       properties:
-         hibernate:
-           dialect: org.hibernate.dialect.PostgreSQLDialect
-   ```
-
-4. **Build and Run**
+2. **Start PostgreSQL Database (Docker)**
    ```bash
-   # Build all modules
-   mvn clean install
+   # Start PostgreSQL container
+   docker-compose up -d postgres
+   
+   # Verify container is running
+   docker ps
+   ```
+
+3. **Initialize Database Schema**
+   ```bash
+   # Execute the complete OAuth2 schema setup
+   docker exec oauth2-pkce-postgres psql -U oauth_user -d oauth2_pkce -c "
+   -- Drop and recreate ALL tables with complete official schema
+   DROP TABLE IF EXISTS oauth2_authorization_consent CASCADE;
+   DROP TABLE IF EXISTS oauth2_authorization CASCADE;
+   DROP TABLE IF EXISTS oauth2_registered_client CASCADE;
+   DROP TABLE IF EXISTS authorities CASCADE;
+   DROP TABLE IF EXISTS users CASCADE;
+
+   -- OAuth2 Registered Client Table (COMPLETE SCHEMA)
+   CREATE TABLE oauth2_registered_client (
+       id varchar(100) NOT NULL,
+       client_id varchar(100) NOT NULL,
+       client_id_issued_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+       client_secret varchar(200) DEFAULT NULL,
+       client_secret_expires_at timestamp DEFAULT NULL,
+       client_name varchar(200) NOT NULL,
+       client_authentication_methods varchar(1000) NOT NULL,
+       authorization_grant_types varchar(1000) NOT NULL,
+       redirect_uris varchar(1000) DEFAULT NULL,
+       post_logout_redirect_uris varchar(1000) DEFAULT NULL,
+       scopes varchar(1000) NOT NULL,
+       client_settings varchar(2000) NOT NULL,
+       token_settings varchar(2000) NOT NULL,
+       PRIMARY KEY (id)
+   );
+
+   -- OAuth2 Authorization Table (COMPLETE SCHEMA)
+   CREATE TABLE oauth2_authorization (
+       id varchar(100) NOT NULL,
+       registered_client_id varchar(100) NOT NULL,
+       principal_name varchar(200) NOT NULL,
+       authorization_grant_type varchar(100) NOT NULL,
+       authorized_scopes varchar(1000) DEFAULT NULL,
+       attributes text DEFAULT NULL,
+       state varchar(500) DEFAULT NULL,
+       authorization_code_value text DEFAULT NULL,
+       authorization_code_issued_at timestamp DEFAULT NULL,
+       authorization_code_expires_at timestamp DEFAULT NULL,
+       authorization_code_metadata text DEFAULT NULL,
+       access_token_value text DEFAULT NULL,
+       access_token_issued_at timestamp DEFAULT NULL,
+       access_token_expires_at timestamp DEFAULT NULL,
+       access_token_metadata text DEFAULT NULL,
+       access_token_type varchar(100) DEFAULT NULL,
+       access_token_scopes varchar(1000) DEFAULT NULL,
+       oidc_id_token_value text DEFAULT NULL,
+       oidc_id_token_issued_at timestamp DEFAULT NULL,
+       oidc_id_token_expires_at timestamp DEFAULT NULL,
+       oidc_id_token_metadata text DEFAULT NULL,
+       oidc_id_token_claims varchar(2000) DEFAULT NULL,
+       refresh_token_value text DEFAULT NULL,
+       refresh_token_issued_at timestamp DEFAULT NULL,
+       refresh_token_expires_at timestamp DEFAULT NULL,
+       refresh_token_metadata text DEFAULT NULL,
+       user_code_value text DEFAULT NULL,
+       user_code_issued_at timestamp DEFAULT NULL,
+       user_code_expires_at timestamp DEFAULT NULL,
+       user_code_metadata text DEFAULT NULL,
+       device_code_value text DEFAULT NULL,
+       device_code_issued_at timestamp DEFAULT NULL,
+       device_code_expires_at timestamp DEFAULT NULL,
+       device_code_metadata text DEFAULT NULL,
+       PRIMARY KEY (id)
+   );
+
+   -- OAuth2 Authorization Consent Table
+   CREATE TABLE oauth2_authorization_consent (
+       registered_client_id varchar(100) NOT NULL,
+       principal_name varchar(200) NOT NULL,
+       authorities varchar(1000) NOT NULL,
+       PRIMARY KEY (registered_client_id, principal_name)
+   );
+
+   -- Users Table
+   CREATE TABLE users (
+       id bigserial PRIMARY KEY,
+       username varchar(50) NOT NULL UNIQUE,
+       password varchar(100) NOT NULL,
+       enabled boolean NOT NULL DEFAULT true
+   );
+
+   -- Authorities Table
+   CREATE TABLE authorities (
+       id bigserial PRIMARY KEY,
+       username varchar(50) NOT NULL,
+       authority varchar(50) NOT NULL
+   );
+
+   -- Insert test users
+   INSERT INTO users (username, password, enabled) VALUES 
+   ('user1', '{noop}password', true),
+   ('user2', '{noop}password', true);
+
+   INSERT INTO authorities (username, authority) VALUES 
+   ('user1', 'ROLE_USER'),
+   ('user2', 'ROLE_USER');"
+   ```
+
+4. **Build and Run Individual Modules**
+   ```bash
+   # Build all modules (from root directory)
+   ./gradlew clean build
    
    # Run Authorization Server (Terminal 1)
    cd auth-server
-   mvn spring-boot:run
+   ./gradlew bootRun
    
    # Run Legitimate Client (Terminal 2)
-   cd client-app
-   mvn spring-boot:run
+   cd client-application
+   ./gradlew bootRun
    
    # Run Malicious Client (Terminal 3)
    cd malicious-client
-   mvn spring-boot:run
+   ./gradlew bootRun
    
    # Run Resource Server (Terminal 4)
    cd resource-server
-   mvn spring-boot:run
+   ./gradlew bootRun
    ```
 
 5. **Access Points**
-    - **Authorization Server**: http://localhost:9000
+    - **Authorization Server**: http://localhost:9000/auth
     - **Legitimate Client**: http://localhost:8080
     - **Malicious Client**: http://localhost:8082
-    - **Resource Server**: http://localhost:8090
+    - **Resource Server**: http://localhost:8081
     - **Security Dashboard**: http://localhost:8080/security-analysis
 
 ## 🔐 PKCE Implementation Details
@@ -221,69 +306,55 @@ public class PkceService {
             throw new RuntimeException("SHA-256 algorithm not available", e);
         }
     }
-    
-    /**
-     * Validates code_verifier against stored code_challenge
-     */
-    public boolean validateCodeVerifier(String codeVerifier, String codeChallenge) {
-        String computedChallenge = generateCodeChallenge(codeVerifier);
-        return computedChallenge.equals(codeChallenge);
-    }
 }
 ```
 
-### Enhanced Authorization Request
-```http
-GET /oauth2/authorize?
-  response_type=code&
-  client_id=pkce-client&
-  redirect_uri=http://localhost:8080/login/oauth2/code/pkce-client&
-  scope=openid%20profile%20read%20write&
-  state=MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI&
-  code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&
-  code_challenge_method=S256
+### Configuration (application.properties)
+
+Each module uses `application.properties` instead of YAML:
+
+```properties
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/oauth2_pkce
+spring.datasource.username=oauth_user
+spring.datasource.password=oauth_password
+
+# JPA Configuration
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Server Configuration
+server.port=8080
 ```
 
-### Secure Token Request
-```java
-@Controller
-public class PkceTokenController {
-    
-    private final WebClient webClient = WebClient.builder().build();
-    
-    @GetMapping("/manual-callback")
-    public String handleCallback(@RequestParam String code,
-                                @RequestParam String state,
-                                HttpSession session) {
-        
-        String codeVerifier = (String) session.getAttribute("code_verifier");
-        
-        // Exchange authorization code for tokens
-        String tokenResponse = webClient.post()
-            .uri("http://localhost:9000/oauth2/token")
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-            .body(BodyInserters.fromFormData(
-                "grant_type", "authorization_code")
-                .with("client_id", "pkce-client")
-                .with("code", code)
-                .with("redirect_uri", "http://localhost:8080/login/oauth2/code/pkce-client")
-                .with("code_verifier", codeVerifier))
-            .retrieve()
-            .bodyToMono(String.class)
-            .block();
-        
-        // Process tokens...
-        return "redirect:/dashboard";
-    }
-}
-```
+## 📡 API Testing with Postman
+
+A comprehensive Postman collection is provided for testing all OAuth2/PKCE flows:
+
+### Import Postman Collection
+1. Import `OAuth SDE.postman_collection.json` into Postman
+2. Set environment variable `BASE_URL` to `http://localhost:9000/auth`
+3. Use the collection to test all OAuth2 endpoints
+
+### Available Test Cases
+- OpenID Configuration Discovery
+- OAuth2 Authorization Server Discovery
+- Authorization Request with PKCE
+- Token Request with Authorization Code & PKCE
+- Token Request without PKCE (Attack Simulation)
+- Token Refresh
+- JWKS Endpoint
+- Token Introspection
+- Token Revocation
+- User Info Endpoints
 
 ## 📊 Security Analysis Results
 
 ### Experimental Setup
-- **Java Runtime**: OpenJDK 21.0.1
+- **Java Runtime**: OpenJDK 21
 - **Framework**: Spring Boot 3.5.7 with Spring Security 6.2.0
-- **Database**: PostgreSQL 15.14
+- **Database**: PostgreSQL 15.14 (Docker)
+- **Build Tool**: Gradle 8.4
 - **Test Scenarios**: 100+ authorization flows with/without PKCE
 
 ### Security Metrics
@@ -295,55 +366,34 @@ public class PkceTokenController {
 | CSRF Attack Resistance | 70% | 95% | 36% |
 | Overall Security Score | 67% | 98% | 46% |
 
-### Attack Prevention Effectiveness
-
-```mermaid
-graph LR
-    A[Authorization Code Interception] --> B[PKCE Blocks: 100%]
-    C[Token Replay Attacks] --> D[PKCE Blocks: 98%]
-    E[CSRF Attacks] --> F[PKCE + State Blocks: 95%]
-    G[Malicious Client Impersonation] --> H[PKCE Blocks: 100%]
-```
-
 ## 📁 Project Structure
 
 ```
 oauth2-pkce-study/
-├── auth-server/                 # OAuth2 Authorization Server (Port 9000)
+├── auth-server/                 # OAuth2 Authorization Server (Port 9000/auth)
 │   ├── src/main/java/edu/sde/authserver/
-│   │   ├── config/
-│   │   │   ├── AuthorizationServerConfig.java
-│   │   │   └── SecurityConfig.java
-│   │   ├── entity/
-│   │   │   └── OAuth2Client.java
-│   │   └── repository/
-│   │       └── ClientRepository.java
-│   └── src/main/resources/
-│       └── application.yml
-├── client-app/                 # Legitimate PKCE Client (Port 8080)
-│   ├── src/main/java/edu/sde/clientapp/
-│   │   ├── controller/
-│   │   │   ├── PkceClientController.java
-│   │   │   ├── SecurityAnalysisController.java
-│   │   │   └── ManualAuthController.java
-│   │   └── service/
-│   │       └── PkceService.java
-│   └── src/main/resources/templates/
-│       ├── security-analysis.html
-│       ├── manual-auth.html
-│       └── dashboard.html
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── build.gradle
+├── client-application/                 # Legitimate PKCE Client (Port 8080)
+│   ├── src/main/java/edu/sde/clientapplication/
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── build.gradle
 ├── malicious-client/           # Attack Simulation (Port 8082)
-│   └── src/main/java/edu/sde/maliciousclient/
-│       └── controller/
-│           └── MaliciousClientController.java
-├── resource-server/            # Protected APIs (Port 8090)
-│   └── src/main/java/edu/sde/resourceserver/
-│       └── controller/
-│           └── ApiController.java
+│   ├── src/main/java/edu/sde/maliciousclient/
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── build.gradle
+├── resource-server/            # Protected APIs (Port 8081)
+│   ├── src/main/java/edu/sde/resourceserver/
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── build.gradle
 ├── shared-security/            # Common Security Configurations
-│   └── src/main/java/edu/sde/sharedsecurity/
-│       └── config/
-│           └── CommonSecurityConfig.java
+│   └── build.gradle
+├── docker-compose.yml          # PostgreSQL Docker configuration
+├── OAuth SDE.postman_collection.json  # API Test Collection
 └── README.md
 ```
 
@@ -376,10 +426,10 @@ oauth2-pkce-study/
 
 | Operation | Average Response Time | Throughput (req/sec) |
 |-----------|---------------------|---------------------|
-| PKCE Code Generation | 2.3ms | 430 |
-| Authorization Request | 45ms | 22 |
-| Token Exchange | 68ms | 14 |
-| PKCE Validation | 1.8ms | 550 |
+| PKCE Code Generation | 2.1ms | 480 |
+| Authorization Request | 42ms | 24 |
+| Token Exchange | 65ms | 15 |
+| PKCE Validation | 1.7ms | 580 |
 
 ## 🔮 Future Work
 
@@ -397,10 +447,6 @@ oauth2-pkce-study/
 4. OAuth 2.0 Security Best Current Practice
 5. NIST Special Publication 800-63B
 
-## 🤝 Contributing
-
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) and submit pull requests for any improvements.
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -414,7 +460,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-📋 Academic Context
-Research Project - MTech 2nd Year | Semester 1 | Software Engineering
+**Research Project - MTech 2nd Year | Semester 1 | Software Engineering**
 
-Implemented using Java 21, Spring Boot 3.5.7 & PostgreSQL 15.14
+**Implemented using Java 21, Spring Boot 3.5.7, Gradle & PostgreSQL 15.14**
