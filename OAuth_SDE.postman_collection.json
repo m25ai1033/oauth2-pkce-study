@@ -1,0 +1,700 @@
+{
+	"info": {
+		"_postman_id": "f13ff34d-3f5f-4258-b1b2-c446166efec1",
+		"name": "OAuth SDE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13362751",
+		"_collection_link": "https://sunking-engineering-team.postman.co/workspace/My-Workspace~37332d9d-f7a1-4046-8792-355a1822b479/collection/13362751-f13ff34d-3f5f-4258-b1b2-c446166efec1?action=share&source=collection_link&creator=13362751"
+	},
+	"item": [
+		{
+			"name": "auth-server",
+			"item": [
+				{
+					"name": "1. OpenID Configuration Discovery",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/.well-known/openid-configuration",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								".well-known",
+								"openid-configuration"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "1. OpenID Configuration Discovery",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/.well-known/openid-configuration",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										".well-known",
+										"openid-configuration"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Nov 2025 18:46:09 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"issuer\": \"http://localhost:9000/auth\",\n    \"authorization_endpoint\": \"http://localhost:9000/auth/oauth2/authorize\",\n    \"pushed_authorization_request_endpoint\": \"http://localhost:9000/auth/oauth2/par\",\n    \"device_authorization_endpoint\": \"http://localhost:9000/auth/oauth2/device_authorization\",\n    \"token_endpoint\": \"http://localhost:9000/auth/oauth2/token\",\n    \"token_endpoint_auth_methods_supported\": [\n        \"client_secret_basic\",\n        \"client_secret_post\",\n        \"client_secret_jwt\",\n        \"private_key_jwt\",\n        \"tls_client_auth\",\n        \"self_signed_tls_client_auth\"\n    ],\n    \"jwks_uri\": \"http://localhost:9000/auth/oauth2/jwks\",\n    \"userinfo_endpoint\": \"http://localhost:9000/auth/userinfo\",\n    \"end_session_endpoint\": \"http://localhost:9000/auth/connect/logout\",\n    \"response_types_supported\": [\n        \"code\"\n    ],\n    \"grant_types_supported\": [\n        \"authorization_code\",\n        \"client_credentials\",\n        \"refresh_token\",\n        \"urn:ietf:params:oauth:grant-type:device_code\",\n        \"urn:ietf:params:oauth:grant-type:token-exchange\"\n    ],\n    \"revocation_endpoint\": \"http://localhost:9000/auth/oauth2/revoke\",\n    \"revocation_endpoint_auth_methods_supported\": [\n        \"client_secret_basic\",\n        \"client_secret_post\",\n        \"client_secret_jwt\",\n        \"private_key_jwt\",\n        \"tls_client_auth\",\n        \"self_signed_tls_client_auth\"\n    ],\n    \"introspection_endpoint\": \"http://localhost:9000/auth/oauth2/introspect\",\n    \"introspection_endpoint_auth_methods_supported\": [\n        \"client_secret_basic\",\n        \"client_secret_post\",\n        \"client_secret_jwt\",\n        \"private_key_jwt\",\n        \"tls_client_auth\",\n        \"self_signed_tls_client_auth\"\n    ],\n    \"code_challenge_methods_supported\": [\n        \"S256\"\n    ],\n    \"tls_client_certificate_bound_access_tokens\": true,\n    \"dpop_signing_alg_values_supported\": [\n        \"RS256\",\n        \"RS384\",\n        \"RS512\",\n        \"PS256\",\n        \"PS384\",\n        \"PS512\",\n        \"ES256\",\n        \"ES384\",\n        \"ES512\"\n    ],\n    \"subject_types_supported\": [\n        \"public\"\n    ],\n    \"id_token_signing_alg_values_supported\": [\n        \"RS256\"\n    ],\n    \"scopes_supported\": [\n        \"openid\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "2. OAuth2 Authorization Server Discovery",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/.well-known/oauth-authorization-server",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								".well-known",
+								"oauth-authorization-server"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "2. OAuth2 Authorization Server Discovery",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/.well-known/oauth-authorization-server",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										".well-known",
+										"oauth-authorization-server"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Nov 2025 22:32:04 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"issuer\": \"http://localhost:9000/auth\",\n    \"authorization_endpoint\": \"http://localhost:9000/auth/oauth2/authorize\",\n    \"device_authorization_endpoint\": \"http://localhost:9000/auth/oauth2/device_authorization\",\n    \"token_endpoint\": \"http://localhost:9000/auth/oauth2/token\",\n    \"token_endpoint_auth_methods_supported\": [\n        \"client_secret_basic\",\n        \"client_secret_post\",\n        \"client_secret_jwt\",\n        \"private_key_jwt\",\n        \"tls_client_auth\",\n        \"self_signed_tls_client_auth\"\n    ],\n    \"jwks_uri\": \"http://localhost:9000/auth/oauth2/jwks\",\n    \"response_types_supported\": [\n        \"code\"\n    ],\n    \"grant_types_supported\": [\n        \"authorization_code\",\n        \"client_credentials\",\n        \"refresh_token\",\n        \"urn:ietf:params:oauth:grant-type:device_code\",\n        \"urn:ietf:params:oauth:grant-type:token-exchange\"\n    ],\n    \"revocation_endpoint\": \"http://localhost:9000/auth/oauth2/revoke\",\n    \"revocation_endpoint_auth_methods_supported\": [\n        \"client_secret_basic\",\n        \"client_secret_post\",\n        \"client_secret_jwt\",\n        \"private_key_jwt\",\n        \"tls_client_auth\",\n        \"self_signed_tls_client_auth\"\n    ],\n    \"introspection_endpoint\": \"http://localhost:9000/auth/oauth2/introspect\",\n    \"introspection_endpoint_auth_methods_supported\": [\n        \"client_secret_basic\",\n        \"client_secret_post\",\n        \"client_secret_jwt\",\n        \"private_key_jwt\",\n        \"tls_client_auth\",\n        \"self_signed_tls_client_auth\"\n    ],\n    \"code_challenge_methods_supported\": [\n        \"S256\"\n    ],\n    \"tls_client_certificate_bound_access_tokens\": true,\n    \"dpop_signing_alg_values_supported\": [\n        \"RS256\",\n        \"RS384\",\n        \"RS512\",\n        \"PS256\",\n        \"PS384\",\n        \"PS512\",\n        \"ES256\",\n        \"ES384\",\n        \"ES512\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "3. Authorization Request with PKCE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/oauth2/authorize?response_type=code&client_id=web-app&redirect_uri=http://localhost:8080/login/oauth2/code/spring&scope=openid&state=f8829b71-5832-4a32-af8e-6d5bc2a37e36&code_challenge=ChmhxG6cavKqjTteBIORnZVwza6iNc9LI9vO4kFHKio&code_challenge_method=S256",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"oauth2",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "web-app"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:8080/login/oauth2/code/spring"
+								},
+								{
+									"key": "scope",
+									"value": "openid"
+								},
+								{
+									"key": "state",
+									"value": "f8829b71-5832-4a32-af8e-6d5bc2a37e36"
+								},
+								{
+									"key": "code_challenge",
+									"value": "ChmhxG6cavKqjTteBIORnZVwza6iNc9LI9vO4kFHKio"
+								},
+								{
+									"key": "code_challenge_method",
+									"value": "S256"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "3. Authorization Request with PKCE",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/oauth2/authorize?response_type=code&client_id=web-app&redirect_uri=http://localhost:8080/login/oauth2/code/web-app&scope=openid&state=f8829b71-5832-4a32-af8e-6d5bc2a37e36&code_challenge=ChmhxG6cavKqjTteBIORnZVwza6iNc9LI9vO4kFHKio&code_challenge_method=S256",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"oauth2",
+										"authorize"
+									],
+									"query": [
+										{
+											"key": "response_type",
+											"value": "code"
+										},
+										{
+											"key": "client_id",
+											"value": "web-app"
+										},
+										{
+											"key": "redirect_uri",
+											"value": "http://localhost:8080/login/oauth2/code/web-app"
+										},
+										{
+											"key": "scope",
+											"value": "openid"
+										},
+										{
+											"key": "state",
+											"value": "f8829b71-5832-4a32-af8e-6d5bc2a37e36"
+										},
+										{
+											"key": "code_challenge",
+											"value": "ChmhxG6cavKqjTteBIORnZVwza6iNc9LI9vO4kFHKio"
+										},
+										{
+											"key": "code_challenge_method",
+											"value": "S256"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html;charset=UTF-8"
+								},
+								{
+									"key": "Content-Language",
+									"value": "en-US"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 15 Nov 2025 22:31:28 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\">\n        <title>Authorization Server - Login</title>\n        <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n        <style>\n        .login-container {\n            max-width: 400px;\n            margin: 100px auto;\n            padding: 20px;\n            border: 1px solid #ddd;\n            border-radius: 8px;\n            box-shadow: 0 2px 10px rgba(0,0,0,0.1);\n        }\n    </style>\n    </head>\n    <body>\n        <div class=\"container\">\n            <div class=\"login-container\">\n                <h2 class=\"text-center mb-4\">Authorization Server</h2>\n                <form action=\"/auth/login\" method=\"post\">\n                    <input type=\"hidden\" name=\"_csrf\" value=\"kt_s2P3e9Y-0DsjsJ8Uw8lYUw4Y763wv5LfPntaQ-ejBoCD0o-_dup7mwLyZNqzZEugEymV37r9Z3E4CgdL6p7L0ztD3wkHH\"/>\n                    <div class=\"mb-3\">\n                        <label for=\"username\" class=\"form-label\">Username</label>\n                        <input type=\"text\" class=\"form-control\" id=\"username\" name=\"username\" required>\n            \n                    </div>\n                    <div class=\"mb-3\">\n                        <label for=\"password\" class=\"form-label\">Password</label>\n                        <input type=\"password\" class=\"form-control\" id=\"password\" name=\"password\" required>\n            \n                    </div>\n                    <button type=\"submit\" class=\"btn btn-primary w-100\">Sign In</button>\n                </form>\n                <div class=\"mt-4\">\n                    <h6>Test Users:</h6>\n                    <ul class=\"list-unstyled\">\n                        <li>\n                            <strong>Username:</strong> user1,\n                            <strong>Password:</strong> password\n                        </li>\n                        <li>\n                            <strong>Username:</strong> user2,\n                            <strong>Password:</strong> password\n                        </li>\n                    </ul>\n                </div>\n            </div>\n        </div>\n    </body>\n</html>"
+						}
+					]
+				},
+				{
+					"name": "4. Token Request with Authorization Code & PKCE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "XboCZJbR36osBl1btkpVupXfFve2zcix",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "angazaWebhookTgoUser",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "code",
+									"value": "AUTHORIZATION_CODE_HERE",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:8080/login/oauth2/code/spring",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "client",
+									"type": "text"
+								},
+								{
+									"key": "code_verifier",
+									"value": "plain_code_verifier_string_here",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/oauth2/token",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Token Request without PKCE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "AUTHORIZATION_CODE_HERE",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:8080/login/oauth2/code/spring",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/oauth2/token",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Refresh Token Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "grant_type",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "REFRESH_TOKEN_HERE",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "client",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/oauth2/token",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Get JSON Web Key Set",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/oauth2/jwks",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"oauth2",
+								"jwks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. Token Introspection",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "ACCESS_TOKEN_OR_REFRESH_TOKEN_HERE",
+									"type": "text"
+								},
+								{
+									"key": "token_type_hint",
+									"value": "access_token",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/oauth2/introspect",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"oauth2",
+								"introspect"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. Token Revocation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "TOKEN_TO_REVOKE_HERE",
+									"type": "text"
+								},
+								{
+									"key": "token_type_hint",
+									"value": "access_token",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/oauth2/revoke",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"oauth2",
+								"revoke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Info",
+			"item": [
+				{
+					"name": "1. Get User Info (GET)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/userinfo",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get User Info (POST)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/userinfo",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": ""
+		}
+	]
+}
