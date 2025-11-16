@@ -245,23 +245,19 @@ graph TB
 4. **Build and Run Individual Modules**
    ```bash
    # Build all modules (from root directory)
-   ./gradlew clean build
+   ./gradlew clean build -x test
    
    # Run Authorization Server (Terminal 1)
-   cd auth-server
-   ./gradlew bootRun
+   ./gradlew :auth-server:bootRun
    
    # Run Legitimate Client (Terminal 2)
-   cd client-application
-   ./gradlew bootRun
+    ./gradlew :client-application:bootRun
    
    # Run Malicious Client (Terminal 3)
-   cd malicious-client
-   ./gradlew bootRun
+    ./gradlew :malicious-client:bootRun
    
    # Run Resource Server (Terminal 4)
-   cd resource-server
-   ./gradlew bootRun
+   ./gradlew :resource-server:bootRun
    ```
 
 5. **Access Points**
@@ -311,7 +307,7 @@ public class PkceService {
 
 ### Configuration (application.properties)
 
-Each module uses `application.properties` instead of YAML:
+Each module uses `application.properties` :
 
 ```properties
 # Database Configuration
